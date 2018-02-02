@@ -27,3 +27,18 @@ brew install nodebrew
 mkdir -p ~/.nodebrew/src
 nodebrew install-binary latest
 echo 'export PATH=$PATH:~/.nodebrew/current/bin' >> ~/.bashrc
+
+# ssh公開鍵作成
+ssh-keygen
+
+# .ssh/config作成
+cat << EOS > ~/.ssh/config
+Host github.com
+    HostName github.com
+    User git
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/id_rsa
+
+Host *
+    UseKeychain yes
+EOS
