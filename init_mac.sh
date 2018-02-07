@@ -15,6 +15,9 @@ alias ls='ls -G'
 alias ll='ls -la'
 EOS
 
+# ネットワークドライブで.DS_Storeを作成しないようにする
+defaults write com.apple.desktopservices DSDontWriteNetworkStores True
+
 # 隠しファイルを表示するようにする
 defaults write com.apple.finder AppleShowAllFiles TRUE
 killall Finder
