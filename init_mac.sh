@@ -13,6 +13,7 @@ fi
 cat << EOS > ~/.bashrc
 alias ls='ls -G'
 alias ll='ls -la'
+alias relogin='exec $SHELL -l'
 EOS
 
 # ネットワークドライブで.DS_Storeを作成しないようにする
