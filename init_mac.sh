@@ -23,6 +23,9 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores True
 defaults write com.apple.finder AppleShowAllFiles TRUE
 killall Finder
 
+# Xcodeでビルド時間を表示する
+defaults write com.apple.dt.Xcode ShowBuildOperationDuration YES
+
 # Homebrewインストール
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
