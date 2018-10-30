@@ -14,6 +14,11 @@ cat << EOS > ~/.bashrc
 alias ls='ls -G'
 alias ll='ls -la'
 alias relogin='exec $SHELL -l'
+alias merged_branch='git branch --merged | grep -vE '\''^\*|master$'\'''
+alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
+alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
+alias gf='git fetch -p'
+alias gp='git pull --rebase -p'
 EOS
 
 # ネットワークドライブで.DS_Storeを作成しないようにする
@@ -49,3 +54,8 @@ Host github.com
 Host *
     UseKeychain yes
 EOS
+
+# ghq & pecoインストール
+brew install ghq
+brew install peco
+echo 'alias glook='"'"'ghq look \$(ghq list | peco)'"'"'' >> ~/.bashrc
