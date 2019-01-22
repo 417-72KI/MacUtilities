@@ -58,4 +58,7 @@ EOS
 # ghq & pecoインストール
 brew install ghq
 brew install peco
-echo 'alias glook='"'"'ghq look \$(ghq list | peco)'"'"'' >> ~/.bashrc
+
+# ghq & peco向けエイリアス
+echo 'alias gout='"'"'git checkout $(git branch | peco | tr -d '\'"\"'\""\'' '\'"\"'\""\'' | tr -d '\'"\"'\""\''*'\'"\"'\""\'')'"'"'' >> ~/.bashrc
+echo 'alias glook='"'"'ghq look $(ghq list | peco)'"'"'' >> ~/.bashrc
