@@ -37,6 +37,22 @@ defaults write com.apple.dt.Xcode ShowBuildOperationDuration YES
 # Homebrewインストール
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
+# rbenvインストール
+brew install rbenv rbenv-communal-gems
+
+cat << EOS >> ~/.bashrc
+if which rbenv > /dev/null; then eval "\$(rbenv init -)"; fi
+export PATH="\$HOME/.rbenv/bin:\$PATH"
+eval "\$(rbenv init -)"
+EOS
+
+relogin
+
+# Rubyを最新版に
+RUBY_LATEST_VERSION = $(rbenv install -l | grep -v - | tail -1)
+rbenv install $RUBY_LATEST_VERSION 
+rbenv global $RUBY_LATEST_VERSION
+
 # Node.jsインストール
 brew install nodebrew
 mkdir -p ~/.nodebrew/src
