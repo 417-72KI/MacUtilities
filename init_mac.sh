@@ -17,6 +17,9 @@ alias relogin='exec $SHELL -l'
 alias merged_branch='git branch --merged | grep -vE '\''^\*|master$'\'''
 alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
 alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
+alias gb='git branch'
+alias gba='git branch -a'
+alias grc='git rebase --continue'
 alias gf='git fetch -p'
 alias gp='git pull --rebase -p'
 EOS
@@ -60,5 +63,9 @@ brew install ghq
 brew install peco
 
 # ghq & peco向けエイリアス
-echo 'alias gout='"'"'git checkout $(git branch | peco | tr -d '\'"\"'\""\'' '\'"\"'\""\'' | tr -d '\'"\"'\""\''*'\'"\"'\""\'')'"'"'' >> ~/.bashrc
-echo 'alias glook='"'"'ghq look $(ghq list | peco)'"'"'' >> ~/.bashrc
+cat << EOS >> ~/.bashrc
+alias gout='git checkout \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
+alias glook='ghq look \$(ghq list | peco)'
+alias grb='SKIP_POST_CHECKOUT=1 git rebase \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
+alias grm='SKIP_POST_CHECKOUT=1 gf && git rebase origin/master'
+EOS
