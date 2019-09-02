@@ -35,10 +35,18 @@ killall Finder
 defaults write com.apple.dt.Xcode ShowBuildOperationDuration YES
 
 # Homebrewインストール
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+if which brew > /dev/null; then
+    echo 'Homebrew already exists'
+else
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
 
 # rbenvインストール
-brew install rbenv rbenv-communal-gems
+if which rbenv > /dev/null; then
+    echo 'rbenv already exists'
+else
+    brew install rbenv rbenv-communal-gems
+fi
 
 cat << EOS >> ~/.bashrc
 if which rbenv > /dev/null; then eval "\$(rbenv init -)"; fi
@@ -46,21 +54,27 @@ export PATH="\$HOME/.rbenv/bin:\$PATH"
 eval "\$(rbenv init -)"
 EOS
 
-relogin
+source ~/.bashrc
 
 # Rubyを最新版に
-RUBY_LATEST_VERSION = $(rbenv install -l | grep -v - | tail -1)
+RUBY_LATEST_VERSION=$(rbenv install -l | grep -v - | tail -1)
 rbenv install $RUBY_LATEST_VERSION 
 rbenv global $RUBY_LATEST_VERSION
 
 # Node.jsインストール
-brew install nodebrew
-mkdir -p ~/.nodebrew/src
-nodebrew install-binary latest
+if which nodebrew > /dev/null; then
+    echo 'nodebrew already exists'
+else
+    brew install nodebrew
+    mkdir -p ~/.nodebrew/src
+    nodebrew install-binary latest
+fi
 echo 'export PATH=$PATH:~/.nodebrew/current/bin' >> ~/.bashrc
 
 # ssh公開鍵作成
-ssh-keygen
+if [[ ! -e ~/.ssh/id_rsa ]]; then
+    ssh-keygen
+fi
 
 # .ssh/config作成
 cat << EOS > ~/.ssh/config
@@ -75,8 +89,16 @@ Host *
 EOS
 
 # ghq & pecoインストール
-brew install ghq
-brew install peco
+if which brew > /dev/null; then
+    echo 'ghq already installed'
+else
+    brew install ghq
+fi
+if which brew > /dev/null; then
+    echo 'peco already installed'
+else
+    brew install peco
+fi
 
 # ghq & peco向けエイリアス
 cat << EOS >> ~/.bashrc
