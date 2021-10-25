@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eo pipefail
+
 # .zprofileを作成
 if [ ! -f ~/.zprofile ]; then
     cat ./zprofile_template > ~/.zprofile
