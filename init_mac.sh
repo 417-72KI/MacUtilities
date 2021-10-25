@@ -33,7 +33,6 @@ if which rbenv > /dev/null; then
     echo 'rbenv already exists'
 else
     brew install rbenv rbenv-communal-gems
-    rbenv init
 fi
 
 # Rubyを最新版に
