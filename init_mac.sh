@@ -89,12 +89,12 @@ Host *
 EOS
 
 # ghq & pecoインストール
-if which brew > /dev/null; then
+if which ghq > /dev/null; then
     echo 'ghq already installed'
 else
     brew install ghq
 fi
-if which brew > /dev/null; then
+if which peco > /dev/null; then
     echo 'peco already installed'
 else
     brew install peco
