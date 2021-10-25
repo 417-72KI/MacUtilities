@@ -38,7 +38,7 @@ defaults write com.apple.dt.Xcode ShowBuildOperationDuration YES
 if which brew > /dev/null; then
     echo 'Homebrew already exists'
 else
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # rbenvインストール
