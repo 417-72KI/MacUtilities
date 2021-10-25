@@ -4,7 +4,13 @@ set -eo pipefail
 
 # .zprofileを作成
 if [ ! -f ~/.zprofile ]; then
-    cat ./zprofile_template > ~/.zprofile
+    read -p "Input your GitHub token: " github_token
+    if [ "$github_token" == "" ]; then 
+        echo 'abort.'
+        exit 1
+    fi
+    cat ./zprofile_template | sed -e "s/{insert your GitHub Token}/$github_token/g" > ~/.zprofile
+
 fi
 
 # ネットワークドライブで.DS_Storeを作成しないようにする
