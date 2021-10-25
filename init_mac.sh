@@ -2,11 +2,7 @@
 
 # .zprofileを作成
 if [ ! -f ~/.zprofile ]; then
-    cat << EOS > ~/.zprofile
-    if [ -f ~/.zshrc ]; then
-    . ~/.zshrc
-    fi
-EOS
+    cat ./zprofile_template > ~/.zprofile
 fi
 
 # エイリアスを登録する
