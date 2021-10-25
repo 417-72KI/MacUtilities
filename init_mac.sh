@@ -1,16 +1,16 @@
 #!/bin/sh
 
-# .bash_profileを作成
-if [ ! -f ~/.bash_profile ]; then
-    cat << EOS > ~/.bash_profile
-    if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
+# .zprofileを作成
+if [ ! -f ~/.zprofile ]; then
+    cat << EOS > ~/.zprofile
+    if [ -f ~/.zshrc ]; then
+    . ~/.zshrc
     fi
 EOS
 fi
 
 # エイリアスを登録する
-cat << EOS > ~/.bashrc
+cat << EOS > ~/.zshrc
 alias ls='ls -G'
 alias ll='ls -la'
 alias relogin='exec $SHELL -l'
@@ -48,13 +48,13 @@ else
     brew install rbenv rbenv-communal-gems
 fi
 
-cat << EOS >> ~/.bashrc
+cat << EOS >> ~/.zshrc
 if which rbenv > /dev/null; then eval "\$(rbenv init -)"; fi
 export PATH="\$HOME/.rbenv/bin:\$PATH"
 eval "\$(rbenv init -)"
 EOS
 
-source ~/.bashrc
+source ~/.zshrc
 
 # Rubyを最新版に
 RUBY_LATEST_VERSION=$(rbenv install -l | grep -v - | tail -1)
@@ -69,7 +69,7 @@ else
     mkdir -p ~/.nodebrew/src
     nodebrew install-binary latest
 fi
-echo 'export PATH=$PATH:~/.nodebrew/current/bin' >> ~/.bashrc
+echo 'export PATH=$PATH:~/.nodebrew/current/bin' >> ~/.zshrc
 
 # ssh公開鍵作成
 if [[ ! -e ~/.ssh/id_rsa ]]; then
@@ -101,7 +101,7 @@ else
 fi
 
 # ghq & peco向けエイリアス
-cat << EOS >> ~/.bashrc
+cat << EOS >> ~/.zshrc
 alias gout='git checkout \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
 alias glook='ghq look \$(ghq list | peco)'
 alias grb='SKIP_POST_CHECKOUT=1 git rebase \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
