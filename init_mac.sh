@@ -11,6 +11,7 @@ if [ ! -f ~/.zprofile ]; then
     fi
     cat ./zprofile_template | sed -e "s/{insert your GitHub Token}/$github_token/g" > ~/.zprofile
 
+    source ~/.zprofile
 fi
 
 # ネットワークドライブで.DS_Storeを作成しないようにする
@@ -87,4 +88,5 @@ fi
 # .zshrc作成
 if [ ! -f ~/.zshrc ]; then
     cat ./zshrc_template > ~/.zshrc
+    source ~/.zshrc
 fi
