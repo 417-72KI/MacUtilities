@@ -5,21 +5,6 @@ if [ ! -f ~/.zprofile ]; then
     cat ./zprofile_template > ~/.zprofile
 fi
 
-# エイリアスを登録する
-cat << EOS > ~/.zshrc
-alias ls='ls -G'
-alias ll='ls -la'
-alias relogin='exec $SHELL -l'
-alias merged_branch='git branch --merged | grep -vE '\''^\*|master$'\'''
-alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
-alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
-alias gb='git branch'
-alias gba='git branch -a'
-alias grc='git rebase --continue'
-alias gf='git fetch -p'
-alias gp='git pull --rebase -p'
-EOS
-
 # ネットワークドライブで.DS_Storeを作成しないようにする
 defaults write com.apple.desktopservices DSDontWriteNetworkStores True
 
@@ -42,15 +27,8 @@ if which rbenv > /dev/null; then
     echo 'rbenv already exists'
 else
     brew install rbenv rbenv-communal-gems
+    rbenv init
 fi
-
-cat << EOS >> ~/.zshrc
-if which rbenv > /dev/null; then eval "\$(rbenv init -)"; fi
-export PATH="\$HOME/.rbenv/bin:\$PATH"
-eval "\$(rbenv init -)"
-EOS
-
-source ~/.zshrc
 
 # Rubyを最新版に
 RUBY_LATEST_VERSION=$(rbenv install -l | grep -v - | tail -1)
@@ -65,7 +43,6 @@ else
     mkdir -p ~/.nodebrew/src
     nodebrew install-binary latest
 fi
-echo 'export PATH=$PATH:~/.nodebrew/current/bin' >> ~/.zshrc
 
 # ssh公開鍵作成
 if [[ ! -e ~/.ssh/id_rsa ]]; then
@@ -96,10 +73,7 @@ else
     brew install peco
 fi
 
-# ghq & peco向けエイリアス
-cat << EOS >> ~/.zshrc
-alias gout='git checkout \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
-alias glook='ghq look \$(ghq list | peco)'
-alias grb='SKIP_POST_CHECKOUT=1 git rebase \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
-alias grm='SKIP_POST_CHECKOUT=1 gf && git rebase origin/master'
-EOS
+# .zshrc作成
+if [ ! -f ~/.zshrc ]; then
+    cat ./zshrc_template > ~/.zshrc
+fi
