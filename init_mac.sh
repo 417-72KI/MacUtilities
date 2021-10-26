@@ -29,6 +29,7 @@ if which brew > /dev/null; then
     echo 'Homebrew already exists'
 else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # https://cutecoder.org/software/detecting-apple-silicon-shell-script/
     if [ "$(uname -m)" = "arm64" ]; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
         eval "$(/opt/homebrew/bin/brew shellenv)"
