@@ -1,28 +1,18 @@
 #!/bin/sh
 
-# .bash_profileを作成
-if [ ! -f ~/.bash_profile ]; then
-    cat << EOS > ~/.bash_profile
-    if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-    fi
-EOS
-fi
+set -eo pipefail
 
-# エイリアスを登録する
-cat << EOS > ~/.bashrc
-alias ls='ls -G'
-alias ll='ls -la'
-alias relogin='exec $SHELL -l'
-alias merged_branch='git branch --merged | grep -vE '\''^\*|master$'\'''
-alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
-alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
-alias gb='git branch'
-alias gba='git branch -a'
-alias grc='git rebase --continue'
-alias gf='git fetch -p'
-alias gp='git pull --rebase -p'
-EOS
+# .zprofileを作成
+if [ ! -f ~/.zprofile ]; then
+    read -p "Input your GitHub token: " github_token
+    if [ "$github_token" == "" ]; then 
+        echo 'abort.'
+        exit 1
+    fi
+    cat ./zprofile_template | sed -e "s/{insert your GitHub Token}/$github_token/g" > ~/.zprofile
+
+    source ~/.zprofile
+fi
 
 # ネットワークドライブで.DS_Storeを作成しないようにする
 defaults write com.apple.desktopservices DSDontWriteNetworkStores True
@@ -39,6 +29,11 @@ if which brew > /dev/null; then
     echo 'Homebrew already exists'
 else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # https://cutecoder.org/software/detecting-apple-silicon-shell-script/
+    if [ "$(uname -m)" = "arm64" ]; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
 fi
 
 # rbenvインストール
@@ -47,14 +42,6 @@ if which rbenv > /dev/null; then
 else
     brew install rbenv rbenv-communal-gems
 fi
-
-cat << EOS >> ~/.bashrc
-if which rbenv > /dev/null; then eval "\$(rbenv init -)"; fi
-export PATH="\$HOME/.rbenv/bin:\$PATH"
-eval "\$(rbenv init -)"
-EOS
-
-source ~/.bashrc
 
 # Rubyを最新版に
 RUBY_LATEST_VERSION=$(rbenv install -l | grep -v - | tail -1)
@@ -69,7 +56,6 @@ else
     mkdir -p ~/.nodebrew/src
     nodebrew install-binary latest
 fi
-echo 'export PATH=$PATH:~/.nodebrew/current/bin' >> ~/.bashrc
 
 # ssh公開鍵作成
 if [[ ! -e ~/.ssh/id_rsa ]]; then
@@ -100,10 +86,8 @@ else
     brew install peco
 fi
 
-# ghq & peco向けエイリアス
-cat << EOS >> ~/.bashrc
-alias gout='git checkout \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
-alias glook='ghq look \$(ghq list | peco)'
-alias grb='SKIP_POST_CHECKOUT=1 git rebase \$(gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"')'
-alias grm='SKIP_POST_CHECKOUT=1 gf && git rebase origin/master'
-EOS
+# .zshrc作成
+if [ ! -f ~/.zshrc ]; then
+    cat ./zshrc_template > ~/.zshrc
+    source ~/.zshrc
+fi

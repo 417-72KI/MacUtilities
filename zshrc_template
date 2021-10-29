@@ -1,0 +1,83 @@
+# prompt
+PROMPT='%F{6}%c%f $ '
+
+# rbenv
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+# aliases
+alias ls='ls -G'
+alias ll='ls -la'
+alias relogin='exec /bin/zsh -l'
+alias merged_branch='git branch --merged | grep -vE '\''^\*|master$'\'''
+alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
+alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
+alias rmdsstore="find . -name '.DS_Store' -type f -ls -delete"
+alias rmconflicted="find . -name '*.orig' -type f -ls -delete"
+
+# git alias
+alias gb='git branch'
+alias gba='git branch -a'
+alias gca='git commit --amend'
+alias gcp='git cherry-pick'
+alias gra='git rebase --abort'
+alias grc='git rebase --continue'
+alias gf='git fetch -p'
+alias gp='git pull --rebase -p'
+
+# ghq alias
+alias gbpeco='gb | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
+alias gbapeco='gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
+alias gclone='ghq get --look'
+alias gclones='ghq get --look --shallow'
+alias ghead='git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@''
+alias gout='gf && git checkout $(gbapeco)'
+alias glook='ghq get --look $(ghq list | peco)'
+alias gcode='code $(ghq root)/$(ghq list | peco)'
+alias grb='SKIP_POST_CHECKOUT=1 gf && git rebase $(gbapeco)'
+alias grm='SKIP_POST_CHECKOUT=1 gf && git rebase origin/$(ghead)'
+alias grd='SKIP_POST_CHECKOUT=1 gf && git rebase origin/develop'
+alias gs='git switch $(gbpeco)'
+alias gmb='gf && git merge --no-ff $(gbapeco)'
+alias gmm='gf && git merge --no-ff origin/$(ghead)'
+alias gmd='gf && git merge --no-ff origin/develop'
+alias ghr='git reset --hard'
+
+# Docker alias
+alias drun='docker run -it $(docker images --format "{{.Repository}}:{{.Tag}}" | peco)'
+alias drun-mount='docker run -v `pwd`:`pwd` -w `pwd` -it $(docker images --format "{{.Repository}}:{{.Tag}}" | peco)'
+
+# Other alias and functions
+alias coderc='code ~/.zshrc'
+
+function light() {
+    if [ -z "$2" ]; then
+        src="pbpaste"
+    else
+        src="cat $2"
+    fi
+
+    $src | highlight -O rtf --syntax $1 --font=Ricty --style=molokai --font-size 24 | pbcopy
+}
+
+function copy_current_branch() {
+    git symbolic-ref --short HEAD | tr -d '\n' | pbcopy
+}
+
+function gbc() {
+    if [ $# -ne 1 ]; then
+        echo -e "\e[31mNo branch name specified.\e[m" 1>&2
+        return
+    fi
+    gf && gb --no-track $1 origin/$(ghead)
+    git switch $1
+}
+
+# record iPhone simulator
+function capsim() {
+    TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+    xcrun simctl io booted recordVideo ~/Desktop/capture-$TIMESTAMP.mp4
+    # ffmpeg -i ~/Desktop/capture-$TIMESTAMP.mp4 -r 24 ~/Desktop/capture-$TIMESTAMP.gif
+}
+
+# Other custom aliases or functions
+alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name "vendor" \) -prune -o -type f -name "README*" -print | peco)'
