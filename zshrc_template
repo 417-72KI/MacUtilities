@@ -8,8 +8,6 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 alias ls='ls -G'
 alias ll='ls -la'
 alias relogin='exec /bin/zsh -l'
-alias merged_branch='git branch --merged | grep -vE '\''^\*|master$'\'''
-alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
 alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
 alias rmdsstore="find . -name '.DS_Store' -type f -ls -delete"
 alias rmconflicted="find . -name '*.orig' -type f -ls -delete"
@@ -23,13 +21,16 @@ alias gra='git rebase --abort'
 alias grc='git rebase --continue'
 alias gf='git fetch -p'
 alias gp='git pull --rebase -p'
+alias ghead='git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@''
+
+alias merged_branch="git branch --merged | grep -v '*' | grep -v $(ghead)"
+alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
 
 # ghq alias
 alias gbpeco='gb | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
 alias gbapeco='gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
 alias gclone='ghq get --look'
 alias gclones='ghq get --look --shallow'
-alias ghead='git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@''
 alias gout='gf && git checkout $(gbapeco)'
 alias glook='ghq get --look $(ghq list | peco)'
 alias gcode='code $(ghq root)/$(ghq list | peco)'
@@ -72,7 +73,7 @@ function gbc() {
     git switch $1
 }
 
-# record iPhone simulator
+# Record iPhone simulator
 function capsim() {
     TIMESTAMP=$(date '+%Y%m%d%H%M%S')
     xcrun simctl io booted recordVideo ~/Desktop/capture-$TIMESTAMP.mp4
