@@ -23,7 +23,7 @@ alias gf='git fetch -p'
 alias gp='git pull --rebase -p'
 alias ghead='git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@''
 
-alias merged_branch="git branch --merged | grep -v '*' | grep -v $(ghead)"
+alias merged_branch='git branch --merged | grep -v '"'"'*'"'"' | grep -v $(ghead)'
 alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
 
 # ghq alias
