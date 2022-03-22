@@ -8,7 +8,7 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 alias ls='ls -G'
 alias ll='ls -la'
 alias relogin='exec /bin/zsh -l'
-alias rmderived='rm -rf ~/Library/Developer/Xcode/DerivedData/*'
+alias rmderived='/bin/rm -rf ~/Library/Developer/Xcode/DerivedData/*'
 alias rmdsstore="find . -name '.DS_Store' -type f -ls -delete"
 alias rmconflicted="find . -name '*.orig' -type f -ls -delete"
 
@@ -38,6 +38,7 @@ alias grb='SKIP_POST_CHECKOUT=1 gf && git rebase $(gbapeco)'
 alias grm='SKIP_POST_CHECKOUT=1 gf && git rebase origin/$(ghead)'
 alias grd='SKIP_POST_CHECKOUT=1 gf && git rebase origin/develop'
 alias gs='git switch $(gbpeco)'
+alias gsr='gf && git switch $(gba | grep -v "HEAD" | grep "origin" | sed 's@remotes/origin/@@' | peco)'
 alias gmb='gf && git merge --no-ff $(gbapeco)'
 alias gmm='gf && git merge --no-ff origin/$(ghead)'
 alias gmd='gf && git merge --no-ff origin/develop'
@@ -47,7 +48,9 @@ alias ghr='git reset --hard'
 alias drun='docker run -it $(docker images --format "{{.Repository}}:{{.Tag}}" | peco)'
 alias drun-mount='docker run -v `pwd`:`pwd` -w `pwd` -it $(docker images --format "{{.Repository}}:{{.Tag}}" | peco)'
 
-# Other alias and functions
+# Other custom aliases or functions
+alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name "vendor" \) -prune -o -type f -name "README*" -print | peco)'
+
 alias coderc='code ~/.zshrc'
 
 function light() {
@@ -77,8 +80,10 @@ function gbc() {
 function capsim() {
     TIMESTAMP=$(date '+%Y%m%d%H%M%S')
     xcrun simctl io booted recordVideo ~/Desktop/capture-$TIMESTAMP.mp4
-    # ffmpeg -i ~/Desktop/capture-$TIMESTAMP.mp4 -r 24 ~/Desktop/capture-$TIMESTAMP.gif
+
+    read yn\?"Convert to gif? (y/N): "
+    case "$yn" in [yY]*) ;; *) echo "abort." ; return ;; esac
+
+    ffmpeg -i ~/Desktop/capture-$TIMESTAMP.mp4 -r 24 ~/Desktop/capture-$TIMESTAMP.gif
 }
 
-# Other custom aliases or functions
-alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name "vendor" \) -prune -o -type f -name "README*" -print | peco)'
