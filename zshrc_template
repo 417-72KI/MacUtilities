@@ -15,7 +15,7 @@ alias rmconflicted="find . -name '*.orig' -type f -ls -delete"
 # git alias
 alias gb='git branch'
 alias gba='git branch -a'
-alias gca='git commit --amend'
+alias gca='git commit --amend --no-edit'
 alias gcp='git cherry-pick'
 alias gra='git rebase --abort'
 alias grc='git rebase --continue'
