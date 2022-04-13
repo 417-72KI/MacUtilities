@@ -53,6 +53,7 @@ alias drun-mount='docker run -v `pwd`:`pwd` -w `pwd` -it $(docker images --forma
 alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name "vendor" \) -prune -o -type f -name "README*" -print | peco)'
 
 alias coderc='code ~/.zshrc'
+alias codeprofile='code ~/.zprofile'
 
 function light() {
     if [ -z "$2" ]; then
