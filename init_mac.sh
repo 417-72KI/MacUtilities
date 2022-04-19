@@ -17,6 +17,9 @@ fi
 # ネットワークドライブで.DS_Storeを作成しないようにする
 defaults write com.apple.desktopservices DSDontWriteNetworkStores True
 
+# Xcode13.2~でビルドを高速化する
+defaults write com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration 1
+
 # 隠しファイルを表示するようにする
 defaults write com.apple.finder AppleShowAllFiles TRUE
 killall Finder
