@@ -30,10 +30,23 @@ alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
 # ghq alias
 alias gbpeco='gb | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
 alias gbapeco='gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
-alias gclone='ghq get --look'
-alias gclones='ghq get --look --shallow'
+
+function gclone() {
+    RESULT="$(ghq get -s $@ 2>&1)"
+    CLONE="$(echo "${RESULT}" | grep 'clone' | grep '\->' | sed -E 's/(.*) -> (.*)/\2/g')"
+    EXISTS="$(echo "${RESULT}"| grep 'exists' | sed -E 's/.*exists.* (\/.*)/\1/g')"
+    if [[ "${EXISTS}" != '' ]]; then
+        echo "open ${EXISTS}"
+        code "${EXISTS}"
+    elif [[ "${CLONE}" != '' ]]; then
+        echo "open ${CLONE}"
+        code "${CLONE}"
+    fi
+}
+
+alias gclones='gclone --shallow'
 alias gout='gf && git checkout $(gbapeco)'
-alias glook='ghq get --look $(ghq list | peco)'
+alias glook='ghq get -s --look $(ghq list | peco)'
 alias gcode='code $(ghq root)/$(ghq list | peco)'
 alias gcp='git cherry-pick'
 alias grb='SKIP_POST_CHECKOUT=1 gf && git rebase $(gbapeco)'
