@@ -60,8 +60,35 @@ alias gmd='gf && git merge --no-ff origin/develop'
 alias ghr='git reset --hard'
 
 # Docker alias
-alias drun='docker run -it $(docker images --format "{{.Repository}}:{{.Tag}}" | peco)'
-alias drun-mount='docker run -v `pwd`:`pwd` -w `pwd` -it $(docker images --format "{{.Repository}}:{{.Tag}}" | peco)'
+function drun() {
+    local -A opthash
+    zparseopts -D -A opthash -- -mount m -github g -environment: e:
+
+    OPTION=''
+    if [[ -n "${opthash[(i)--mount]}" ]] || [[ -n "${opthash[(i)-m]}" ]]; then
+        OPTION+=' -v $PWD:/work -w /work'
+    fi
+    if [[ -n "${opthash[(i)--github]}" ]] || [[ -n "${opthash[(i)-g]}" ]]; then
+        OPTION+=' -e GITHUB_TOKEN=$GITHUB_TOKEN'
+    fi
+    if [[ -n "${opthash[(i)--environment]}" ]]; then
+        OPTION+=" -e ${opthash[--environment]}"
+    fi
+    if [[ -n "${opthash[(i)-e]}" ]]; then
+        OPTION+=" -e ${opthash[-e]}"
+    fi
+
+    if [[ $# -eq 0 ]]; then
+        IMAGE="$(docker images --format "{{.Repository}}:{{.Tag}}" | peco)"
+    else
+        IMAGE="$1"
+        shift
+    fi
+    # echo "docker run $(eval echo $OPTION) -it $IMAGE $@"
+    docker run $(eval echo $OPTION) -it $IMAGE $@
+}
+
+alias validate-renovate='drun -mg -e RENOVATE_TOKEN=$GITHUB_TOKEN renovate/renovate:slim renovate-config-validator'
 
 # Other custom aliases or functions
 alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name "vendor" \) -prune -o -type f -name "README*" -print | peco)'
