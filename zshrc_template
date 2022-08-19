@@ -24,8 +24,11 @@ alias gf='git fetch -pP --all'
 alias gp='git pull --rebase -p --all'
 alias ghead='git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@''
 
+alias current_branch='gb | grep '"'"'*'"'"' | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
 alias merged_branch='git branch --merged | grep -v '"'"'*'"'"' | grep -v $(ghead)'
 alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
+
+alias gdiffremote='git diff --name-only "origin/$(current_branch)"'
 
 # ghq alias
 alias gbpeco='gb | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
@@ -62,7 +65,13 @@ alias ghr='git reset --hard'
 # Docker alias
 function drun() {
     local -A opthash
-    zparseopts -D -A opthash -- -platform: -mount m -github g -environment: e: -image: i:
+    zparseopts -D -A opthash -- -debug d -bash b -platform: -mount m -github g -environment: e: -image: i:
+
+    if [[ -n "${opthash[(i)--debug]}" ]] || [[ -n "${opthash[(i)-d]}" ]]; then
+        DEBUG=1
+    else
+        DEBUG=0
+    fi
 
     OPTION='--rm'
     if [[ -n "${opthash[(i)--platform]}" ]]; then
@@ -80,6 +89,9 @@ function drun() {
     if [[ -n "${opthash[(i)-e]}" ]]; then
         OPTION+=" -e ${opthash[-e]}"
     fi
+    if [[ -n "${opthash[(i)--bash]}" ]] || [[ -n "${opthash[(i)-b]}" ]]; then
+        OPTION+=' --entrypoint /bin/bash'
+    fi
     if [[ -n "${opthash[(i)--image]}" ]]; then
         IMAGE="${opthash[--image]}"
     elif [[ -n "${opthash[(i)-i]}" ]]; then
@@ -88,7 +100,9 @@ function drun() {
         IMAGE="$(docker images --format "{{.Repository}}:{{.Tag}}" | peco)"
     fi
 
-    # echo "docker run $(eval echo $OPTION) -it $IMAGE $@"
+    if [[ DEBUG -eq 1 ]]; then
+        echo "docker run $(eval echo $OPTION) -it $IMAGE $@"
+    fi
     docker run $(eval echo $OPTION) -it $IMAGE $@
 }
 
