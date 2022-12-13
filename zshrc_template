@@ -8,7 +8,7 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 alias ls='ls -G'
 alias ll='ls -la'
 alias relogin='exec /bin/zsh -l'
-alias rmderived='/bin/rm -rf ~/Library/Developer/Xcode/DerivedData/*'
+alias rmderived='/bin/rm -rf ~/Library/Developer/Xcode/DerivedData/*; osascript -e '"'"'display notification "completed" with title "rmderived"'"'"''
 alias rmdsstore="find . -name '.DS_Store' -type f -ls -delete"
 alias rmconflicted="find . -name '*.orig' -type f -ls -delete"
 
@@ -31,8 +31,8 @@ alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
 alias gdiffremote='git diff --name-only "origin/$(current_branch)"'
 
 # ghq alias
-alias gbpeco='gb | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
-alias gbapeco='gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
+alias gbpeco='gb | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"' | tr -d '"'"'+'"'"''
+alias gbapeco='gba | grep -v "HEAD" | peco | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"' | tr -d '"'"'+'"'"''
 
 function gclone() {
     RESULT="$(ghq get -s $@ 2>&1)"
