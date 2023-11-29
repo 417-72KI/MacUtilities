@@ -8,10 +8,12 @@ bindkey "^R" history-incremental-search-backward
 bindkey "^S" history-incremental-search-forward
 
 # 環境変数
+export PATH="$HOME/.mint/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH=$PATH:~/.nodebrew/current/bin
 export PATH="$HOME/.pyenv/shims:$PATH"
 export PATH=$PATH:~/.local/bin
+export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"
 export GHQ_ROOT=~/.ghq

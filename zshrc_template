@@ -6,7 +6,7 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # aliases
 alias ls='ls -G'
-alias ll='ls -la'
+alias ll='ls -lha'
 alias relogin='exec /bin/zsh -l'
 alias rmderived='/bin/rm -rf ~/Library/Developer/Xcode/DerivedData/*; osascript -e '"'"'display notification "completed" with title "rmderived"'"'"''
 alias rmdsstore="find . -name '.DS_Store' -type f -ls -delete"
@@ -25,8 +25,10 @@ alias gp='git pull --rebase -p --all'
 alias ghead='git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@''
 
 alias current_branch='gb | grep '"'"'*'"'"' | tr -d '"'"' '"'"' | tr -d '"'"'*'"'"''
-alias merged_branch='git branch --merged | grep -v '"'"'*'"'"' | grep -v $(ghead)'
+alias merged_branch='git branch --merged | grep -v '"'"'*'"'"' | grep -v '"'"'+'"'"' | grep -v $(ghead)'
 alias rmmerged_branch='merged_branch | xargs -I % git branch -d %'
+
+alias gbm='current_branch > /tmp/.tmp_current_branch && vim /tmp/.tmp_current_branch && gb -m $(cat /tmp/.tmp_current_branch) && rm /tmp/.tmp_current_branch'
 
 alias gdiffremote='git diff --name-only "origin/$(current_branch)"'
 
@@ -57,9 +59,9 @@ alias grm='SKIP_POST_CHECKOUT=1 gf && git rebase origin/$(ghead)'
 alias grd='SKIP_POST_CHECKOUT=1 gf && git rebase origin/develop'
 alias gs='git switch $(gbpeco)'
 alias gsr='gf && git switch $(gba | grep -v "HEAD" | grep "origin" | sed 's@remotes/origin/@@' | peco)'
-alias gmb='gf && git merge --no-ff $(gbapeco)'
-alias gmm='gf && git merge --no-ff origin/$(ghead)'
-alias gmd='gf && git merge --no-ff origin/develop'
+alias gmb='gf && git merge --no-ff --no-edit $(gbapeco)'
+alias gmm='gf && git merge --no-ff --no-edit origin/$(ghead)'
+alias gmd='gf && git merge --no-ff --no-edit origin/develop'
 alias ghr='git reset --hard'
 
 # Docker alias
