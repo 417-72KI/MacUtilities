@@ -15,21 +15,30 @@ if [ ! -f ~/.zprofile ]; then
 fi
 
 # ネットワークドライブで.DS_Storeを作成しないようにする
-defaults write com.apple.desktopservices DSDontWriteNetworkStores True
+if [ "$(defaults read com.apple.desktopservices DSDontWriteNetworkStores)" != 1 ]; then
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool YES
+fi
 
 # Xcode13.2~でビルドを高速化する
-defaults write com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration 1
+if [ "$(defaults read com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration)" != 1 ]; then
+    defaults write com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration -bool YES
+fi
 
 # 隠しファイルを表示するようにする
-defaults write com.apple.finder AppleShowAllFiles TRUE
-killall Finder
+if [ "$(defaults read com.apple.finder AppleShowAllFiles)" != 1 ]; then
+    defaults write com.apple.finder AppleShowAllFiles -bool YES
+    echo 'Reboot Finder...'
+    killall Finder
+fi
 
 # Xcodeでビルド時間を表示する
-defaults write com.apple.dt.Xcode ShowBuildOperationDuration YES
+if [ "$(defaults read com.apple.dt.Xcode ShowBuildOperationDuration)" != 1 ]; then
+    defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES
+fi
 
 # Homebrewインストール
 if which brew > /dev/null; then
-    echo 'Homebrew already exists'
+    echo '\033[33mHomebrew already exists\033[m'
 else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     # https://cutecoder.org/software/detecting-apple-silicon-shell-script/
@@ -41,19 +50,22 @@ fi
 
 # rbenvインストール
 if which rbenv > /dev/null; then
-    echo 'rbenv already exists'
+    echo '\033[33mrbenv already exists\033[m'
 else
     brew install rbenv rbenv-communal-gems
 fi
 
 # Rubyを最新版に
 RUBY_LATEST_VERSION=$(rbenv install -l | grep -v - | tail -1)
-rbenv install $RUBY_LATEST_VERSION 
-rbenv global $RUBY_LATEST_VERSION
+if [ "$(rbenv versions | grep "$RUBY_LATEST_VERSION")" == '' ]; then
+    rbenv install $RUBY_LATEST_VERSION
+    rbenv global $RUBY_LATEST_VERSION
+    rbenv rehash
+fi
 
 # Node.jsインストール
 if which nodebrew > /dev/null; then
-    echo 'nodebrew already exists'
+    echo '\033[33mnodebrew already exists\033[m'
 else
     brew install nodebrew
     mkdir -p ~/.nodebrew/src
@@ -77,14 +89,28 @@ Host *
     UseKeychain yes
 EOS
 
+# jqインストール
+if which jq > /dev/null; then
+    echo '\033[33mjq already installed\033[m'
+else
+    brew install jq
+fi
+
+# ghインストール
+if which gh > /dev/null; then
+    echo '\033[33mgh already installed\033[m'
+else
+    brew install gh
+fi
+
 # ghq & pecoインストール
 if which ghq > /dev/null; then
-    echo 'ghq already installed'
+    echo '\033[33mghq already installed\033[m'
 else
     brew install ghq
 fi
 if which peco > /dev/null; then
-    echo 'peco already installed'
+    echo '\033[33mpeco already installed\033[m'
 else
     brew install peco
 fi
