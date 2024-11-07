@@ -110,7 +110,7 @@ function drun() {
 
 # Other custom aliases or functions
 alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name "vendor" \) -prune -o -type f -name "README*" -print | peco)'
-alias renovate-config-validator='drun --platform linux/amd64 -mg -e RENOVATE_TOKEN=$GITHUB_TOKEN -i renovate/renovate:slim renovate-config-validator'
+alias renovate-config-validator='drun -mg -e RENOVATE_TOKEN=$GITHUB_TOKEN -i renovate/renovate renovate-config-validator'
 
 alias coderc='code ~/.zshrc'
 alias codeprofile='code ~/.zprofile'
