@@ -67,7 +67,7 @@ alias ghr='git reset --hard'
 # Docker alias
 function drun() {
     local -A opthash
-    zparseopts -D -A opthash -- -debug d -bash b -platform: -mount m -github g -environment: e: -image: i:
+    zparseopts -D -a optarray -A opthash -- -debug d -bash b -platform: -mount m -github g -environment+:: e+:: -image: i:
 
     if [[ -n "${opthash[(i)--debug]}" ]] || [[ -n "${opthash[(i)-d]}" ]]; then
         DEBUG=1
@@ -86,10 +86,18 @@ function drun() {
         OPTION+=' -e GITHUB_TOKEN=$GITHUB_TOKEN'
     fi
     if [[ -n "${opthash[(i)--environment]}" ]]; then
-        OPTION+=" -e ${opthash[--environment]}"
+        for i in ${"${optarray[@]}"}; do
+            if [[ $i =~ ^--environment ]]; then
+                OPTION+=" -e ${i:13}"
+            fi
+        done
     fi
     if [[ -n "${opthash[(i)-e]}" ]]; then
-        OPTION+=" -e ${opthash[-e]}"
+        for i in ${"${optarray[@]}"}; do
+            if [[ $i =~ ^-e ]]; then
+                OPTION+=" -e ${i:2}"
+            fi
+        done
     fi
     if [[ -n "${opthash[(i)--bash]}" ]] || [[ -n "${opthash[(i)-b]}" ]]; then
         OPTION+=' --entrypoint /bin/bash'
