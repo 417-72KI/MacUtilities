@@ -160,3 +160,7 @@ function capsim() {
     ffmpeg -i ~/Desktop/capture-$TIMESTAMP.mp4 -r 24 ~/Desktop/capture-$TIMESTAMP.gif
 }
 
+# Load local .zshrc if exists
+if [ -f ~/.zshrc_local ]; then
+    source ~/.zshrc_local
+fi
