@@ -23,7 +23,9 @@ export ANDROID_HOME=~/android-sdk-macosx
 export PATH=$ANDROID_HOME/bin:$PATH
 
 # Environments for Homebrew (with Apple Silicon)
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ -e /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Load local .zprofile if exists
 if [ -f ~/.zprofile_local ]; then
