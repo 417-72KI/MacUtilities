@@ -1,2 +1,4 @@
+.ssh
+.aws
 *_local
 *.local
