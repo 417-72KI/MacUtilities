@@ -1,6 +1,3 @@
-# prompt
-PROMPT='%c$ '
-
 # 履歴ファイルの保存先
 export HISTFILE=${HOME}/.zhistory
 export SAVEHIST=50
