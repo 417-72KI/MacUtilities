@@ -2,18 +2,6 @@
 
 set -eo pipefail
 
-# .zprofileを作成
-if [ ! -f ~/.zprofile ]; then
-    read -p "Input your GitHub token: " github_token
-    if [ "$github_token" == "" ]; then 
-        echo 'abort.'
-        exit 1
-    fi
-    cat ./zprofile_template | sed -e "s/{insert your GitHub Token}/$github_token/g" > ~/.zprofile
-
-    source ~/.zprofile
-fi
-
 # ネットワークドライブで.DS_Storeを作成しないようにする
 if [ "$(defaults read com.apple.desktopservices DSDontWriteNetworkStores)" != 1 ]; then
     defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool YES
@@ -41,11 +29,7 @@ if which brew > /dev/null; then
     echo '\033[33mHomebrew already exists\033[m'
 else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # https://cutecoder.org/software/detecting-apple-silicon-shell-script/
-    if [ "$(uname -m)" = "arm64" ]; then
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    fi
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # rbenvインストール
@@ -78,7 +62,10 @@ if [[ ! -e ~/.ssh/id_rsa ]]; then
 fi
 
 # .ssh/config作成
-cat << EOS > ~/.ssh/config
+if [ -f ~/.ssh/config ]; then
+    echo '\033[33m~/.ssh/config already exists\033[m'
+else
+    cat << EOS > ~/.ssh/config
 Host github.com
     HostName github.com
     User git
@@ -88,6 +75,7 @@ Host github.com
 Host *
     UseKeychain yes
 EOS
+fi
 
 # jqインストール
 if which jq > /dev/null; then
@@ -115,8 +103,24 @@ else
     brew install peco
 fi
 
-# .zshrc作成
-if [ ! -f ~/.zshrc ]; then
-    cat ./zshrc_template > ~/.zshrc
-    source ~/.zshrc
+# .zprofileを作成
+if [ -f ~/.zprofile ]; then
+    if [[ ! -L ~/.zprofile ]]; then
+        mv ~/.zprofile ~/.zprofile.bak
+    else 
+        rm ~/.zprofile
+    fi
 fi
+ln -s $(pwd)/.zprofile ~/.zprofile
+
+# .zshrc作成
+if [ -f ~/.zshrc ]; then
+    if [[ ! -L ~/.zshrc ]]; then
+        mv ~/.zshrc ~/.zshrc.bak
+    else 
+        rm ~/.zshrc
+    fi
+fi
+ln -s $(pwd)/.zshrc ~/.zshrc
+
+exec /bin/zsh -l
