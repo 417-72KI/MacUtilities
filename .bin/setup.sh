@@ -41,7 +41,7 @@ fi
 
 # Rubyを最新版に
 RUBY_LATEST_VERSION=$(rbenv install -l | grep -v - | tail -1)
-if [ "$(rbenv versions | grep "$RUBY_LATEST_VERSION")" == '' ]; then
+if [ "$(rbenv versions | grep "$RUBY_LATEST_VERSION")" = '' ]; then
     rbenv install $RUBY_LATEST_VERSION
     rbenv global $RUBY_LATEST_VERSION
     rbenv rehash
