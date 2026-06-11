@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 set -eo pipefail
 
@@ -111,7 +111,7 @@ if [ -f ~/.zprofile ]; then
         rm ~/.zprofile
     fi
 fi
-ln -s $(pwd)/.zprofile ~/.zprofile
+ln -s $(pwd)/src/.zprofile ~/.zprofile
 
 # .zshrc作成
 if [ -f ~/.zshrc ]; then
@@ -121,6 +121,6 @@ if [ -f ~/.zshrc ]; then
         rm ~/.zshrc
     fi
 fi
-ln -s $(pwd)/.zshrc ~/.zshrc
+ln -s $(pwd)/src/.zshrc ~/.zshrc
 
 exec /bin/zsh -l

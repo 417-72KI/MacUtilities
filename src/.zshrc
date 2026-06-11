@@ -133,7 +133,9 @@ alias readme='open $(find . -type d \( -name "Carthage" -o -name "Pods" -o -name
 alias renovate-config-validator='drun -mg -e RENOVATE_TOKEN=$GITHUB_TOKEN -i renovate/renovate:slim renovate-config-validator'
 
 alias coderc='code ~/.zshrc'
+alias coderc_local='code ~/.zshrc_local'
 alias codeprofile='code ~/.zprofile'
+alias codeprofile_local='code ~/.zprofile_local'
 
 function light() {
     if [ -z "$2" ]; then
@@ -155,6 +157,20 @@ function gbc() {
         return
     fi
     gf && git switch --no-track -c $1 origin/$(ghead)
+}
+
+# Replace `origin` with forked repo
+function fetchfork() {
+    GITHUB_USER=$(gh api /user --jq .login | tr -d '"')
+    UPSTREAM="$(git remote -v | grep origin | head -1 | awk '{ print $2 }')"
+    if [[ "${UPSTREAM}" = *":${GITHUB_USER}/"* ]];then
+        echo 'Already forked, or my own repo.'
+        return
+    fi
+    git remote rename origin upstream
+    FORKED="$(echo "${UPSTREAM}" | sed -E "s/^(.*)\/(.*)\/(.*)$/\1\/${GITHUB_USER}\/\3/g")"
+    git remote add origin "${FORKED}"
+    git fetch --all --prune
 }
 
 # Record iPhone simulator
