@@ -103,24 +103,29 @@ else
     brew install peco
 fi
 
-# .zprofileを作成
-if [ -f ~/.zprofile ]; then
-    if [[ ! -L ~/.zprofile ]]; then
-        mv ~/.zprofile ~/.zprofile.bak
-    else 
-        rm ~/.zprofile
+# Link dotfiles from src directory
+link_dotfile() {
+    local src_file=$1
+    local dest_file="$HOME/$(basename "$src_file")"
+    
+    if [ -f "$dest_file" ]; then
+        if [[ ! -L "$dest_file" ]]; then
+            mv "$dest_file" "$dest_file.bak"
+        else 
+            rm "$dest_file"
+        fi
     fi
-fi
-ln -s $(pwd)/src/.zprofile ~/.zprofile
+    ln -s "$src_file" "$dest_file"
+}
 
-# .zshrc作成
-if [ -f ~/.zshrc ]; then
-    if [[ ! -L ~/.zshrc ]]; then
-        mv ~/.zshrc ~/.zshrc.bak
-    else 
-        rm ~/.zshrc
+# Process all dotfiles in src directory
+SCRIPT_DIR="${0:A:h}"
+REPO_ROOT="${SCRIPT_DIR}/.."
+for dotfile in "${REPO_ROOT:a}"/src/.*; do
+    echo "\033[34mProcessing $dotfile...\033[m"
+    if [ -f "$dotfile" ] && [ "$(basename "$dotfile")" != "." ] && [ "$(basename "$dotfile")" != ".." ]; then
+        link_dotfile "$dotfile"
     fi
-fi
-ln -s $(pwd)/src/.zshrc ~/.zshrc
+done
 
 exec /bin/zsh -l
