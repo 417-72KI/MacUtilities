@@ -18,6 +18,7 @@ brew "tmux"
 brew "xcbeautify"
 brew "yq"
 brew "carlocab/personal/unrar", trusted: true
+cask "android-studio"
 cask "antigravity"
 cask "antigravity-cli"
 cask "claude-code"
