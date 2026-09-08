@@ -18,9 +18,21 @@
     ]
   },
   "model": "opusplan",
-  "theme": "auto",
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
-  }
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": false,
+    "allowUnsandboxedCommands": false,
+    "excludedCommands": [
+      "git:*",
+      "docker:*"
+    ]
+  },
+  "theme": "auto",
+  "preferredNotifChannel": "terminal_bell",
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true
 }
