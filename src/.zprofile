@@ -19,10 +19,10 @@ export GHQ_ROOT=~/.ghq
 
 # Environments for Homebrew (with Apple Silicon)
 if [[ -e /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # Load local .zprofile if exists
 if [ -f ~/.zprofile_local ]; then
-    source ~/.zprofile_local
+  source ~/.zprofile_local
 fi

@@ -41,11 +41,11 @@ function gclone() {
     CLONE="$(echo "${RESULT}" | grep 'clone' | grep '\->' | sed -E 's/(.*) -> (.*)/\2/g')"
     EXISTS="$(echo "${RESULT}"| grep 'exists' | sed -E 's/.*exists.* (\/.*)/\1/g')"
     if [[ "${EXISTS}" != '' ]]; then
-        echo "open ${EXISTS}"
-        code "${EXISTS}"
+      echo "open ${EXISTS}"
+      code "${EXISTS}"
     elif [[ "${CLONE}" != '' ]]; then
-        echo "open ${CLONE}"
-        code "${CLONE}"
+      echo "open ${CLONE}"
+      code "${CLONE}"
     fi
 }
 
@@ -66,65 +66,65 @@ alias ghr='git reset --hard'
 
 # Docker alias
 function drun() {
-    local -A opthash
-    zparseopts -D -a optarray -A opthash -- -debug d -bash b -platform: -entrypoint: -mount m -github g -environment+:: e+:: -image: i:
+  local -A opthash
+  zparseopts -D -a optarray -A opthash -- -debug d -bash b -platform: -entrypoint: -mount m -github g -environment+:: e+:: -image: i:
 
-    if [[ -n "${opthash[(i)--debug]}" ]] || [[ -n "${opthash[(i)-d]}" ]]; then
-        DEBUG=1
-    else
-        DEBUG=0
-    fi
+  if [[ -n "${opthash[(i)--debug]}" ]] || [[ -n "${opthash[(i)-d]}" ]]; then
+    DEBUG=1
+  else
+    DEBUG=0
+  fi
 
-    OPTION='--rm'
-    if [[ -n "${opthash[(i)--platform]}" ]]; then
-        OPTION+=" --platform ${opthash[--platform]}"
-    fi
-    if [[ -n "${opthash[(i)--entrypoint]}" ]]; then
-        OPTION+=" --entrypoint ${opthash[--entrypoint]}"
-    fi
-    if [[ -n "${opthash[(i)--mount]}" ]] || [[ -n "${opthash[(i)-m]}" ]]; then
-        OPTION+=' -v $PWD:/work -w /work'
-    fi
-    if [[ -n "${opthash[(i)--github]}" ]] || [[ -n "${opthash[(i)-g]}" ]]; then
-        OPTION+=' -e GITHUB_TOKEN=$GITHUB_TOKEN'
-    fi
-    if [[ -n "${opthash[(i)--environment]}" ]]; then
-        for i in ${"${optarray[@]}"}; do
-            if [[ $i =~ ^--environment ]]; then
-                OPTION+=" -e ${i:13}"
-            fi
-        done
-    fi
-    if [[ -n "${opthash[(i)-e]}" ]]; then
-        for i in ${"${optarray[@]}"}; do
-            if [[ $i =~ ^-e ]]; then
-                OPTION+=" -e ${i:2}"
-            fi
-        done
-    fi
-    if [[ -n "${opthash[(i)--bash]}" ]] || [[ -n "${opthash[(i)-b]}" ]]; then
-        OPTION+=' --entrypoint /bin/bash'
-    fi
-    if [[ -n "${opthash[(i)--image]}" ]]; then
-        IMAGE="${opthash[--image]}"
-    elif [[ -n "${opthash[(i)-i]}" ]]; then
-        IMAGE="${opthash[-i]}"
-    else
-        IMAGE="$(docker images --format "{{.Repository}}:{{.Tag}}" | peco)"
-    fi
+  OPTION='--rm'
+  if [[ -n "${opthash[(i)--platform]}" ]]; then
+    OPTION+=" --platform ${opthash[--platform]}"
+  fi
+  if [[ -n "${opthash[(i)--entrypoint]}" ]]; then
+    OPTION+=" --entrypoint ${opthash[--entrypoint]}"
+  fi
+  if [[ -n "${opthash[(i)--mount]}" ]] || [[ -n "${opthash[(i)-m]}" ]]; then
+    OPTION+=' -v $PWD:/work -w /work'
+  fi
+  if [[ -n "${opthash[(i)--github]}" ]] || [[ -n "${opthash[(i)-g]}" ]]; then
+    OPTION+=' -e GITHUB_TOKEN=$GITHUB_TOKEN'
+  fi
+  if [[ -n "${opthash[(i)--environment]}" ]]; then
+    for i in ${"${optarray[@]}"}; do
+      if [[ $i =~ ^--environment ]]; then
+        OPTION+=" -e ${i:13}"
+      fi
+    done
+  fi
+  if [[ -n "${opthash[(i)-e]}" ]]; then
+    for i in ${"${optarray[@]}"}; do
+      if [[ $i =~ ^-e ]]; then
+        OPTION+=" -e ${i:2}"
+      fi
+    done
+  fi
+  if [[ -n "${opthash[(i)--bash]}" ]] || [[ -n "${opthash[(i)-b]}" ]]; then
+    OPTION+=' --entrypoint /bin/bash'
+  fi
+  if [[ -n "${opthash[(i)--image]}" ]]; then
+    IMAGE="${opthash[--image]}"
+  elif [[ -n "${opthash[(i)-i]}" ]]; then
+    IMAGE="${opthash[-i]}"
+  else
+    IMAGE="$(docker images --format "{{.Repository}}:{{.Tag}}" | peco)"
+  fi
 
-    if [[ DEBUG -eq 1 ]]; then
-        echo "docker run $(eval echo $OPTION) -it $IMAGE $@"
-    fi
-    docker run $(eval echo $OPTION) -it $IMAGE $@
+  if [[ DEBUG -eq 1 ]]; then
+    echo "docker run $(eval echo $OPTION) -it $IMAGE $@"
+  fi
+  docker run $(eval echo $OPTION) -it $IMAGE $@
 }
 
 # Alias for Danger-Swift
 function danger-pr() {
     if [ -f "Dangerfile.swift" ]; then
-        DANGER_GITHUB_API_TOKEN=$(gh auth token) danger-swift pr --danger-js-path "$(dirname $(which danger-swift))/danger" $(gh pr view --json url --jq '.url')
+      DANGER_GITHUB_API_TOKEN=$(gh auth token) danger-swift pr --danger-js-path "$(dirname $(which danger-swift))/danger" $(gh pr view --json url --jq '.url')
     else # TODO: Support Danger-Ruby, Danger-JS or Danger-Kotlin
-        echo "Dangerfile.swift not found in the current directory." 1>&2
+      echo "Dangerfile.swift not found in the current directory." 1>&2
     fi
 }
 
@@ -139,9 +139,9 @@ alias codeprofile_local='code ~/.zprofile_local'
 
 function light() {
     if [ -z "$2" ]; then
-        src="pbpaste"
+      src="pbpaste"
     else
-        src="cat $2"
+      src="cat $2"
     fi
 
     $src | highlight -O rtf --syntax $1 --font=Ricty --style=molokai --font-size 24 | pbcopy
@@ -153,8 +153,8 @@ function copy_current_branch() {
 
 function gbc() {
     if [ $# -ne 1 ]; then
-        echo -e "\e[31mNo branch name specified.\e[m" 1>&2
-        return
+      echo -e "\e[31mNo branch name specified.\e[m" 1>&2
+      return
     fi
     gf && git switch --no-track -c $1 origin/$(ghead)
 }
@@ -164,8 +164,8 @@ function fetchfork() {
     GITHUB_USER=$(gh api /user --jq .login | tr -d '"')
     UPSTREAM="$(git remote -v | grep origin | head -1 | awk '{ print $2 }')"
     if [[ "${UPSTREAM}" = *":${GITHUB_USER}/"* ]];then
-        echo 'Already forked, or my own repo.'
-        return
+      echo 'Already forked, or my own repo.'
+      return
     fi
     git remote rename origin upstream
     FORKED="$(echo "${UPSTREAM}" | sed -E "s/^(.*)\/(.*)\/(.*)$/\1\/${GITHUB_USER}\/\3/g")"
@@ -210,18 +210,18 @@ function adbss() {
 
 # Convert MOV to animated GIF
 function mov2gif() {
-    ffmpeg -i "$1" -r 24 "${1%.mov}.gif"
+  ffmpeg -i "$1" -r 24 "${1%.mov}.gif"
 }
 
 # Convert HEIC to JPG
 function heic2jpg() {
-    for BASE_FILE in $@; do
-        OUTPUT_FILE=$(echo $BASE_FILE | sed -E 's/(.*)\.(heic|HEIC)/\1.jpg/g')
-        sips --setProperty format jpeg "$BASE_FILE" --out "$OUTPUT_FILE"
-    done
+  for BASE_FILE in $@; do
+    OUTPUT_FILE=$(echo $BASE_FILE | sed -E 's/(.*)\.(heic|HEIC)/\1.jpg/g')
+    sips --setProperty format jpeg "$BASE_FILE" --out "$OUTPUT_FILE"
+  done
 }
 
 # Load local .zshrc if exists
 if [ -f ~/.zshrc_local ]; then
-    source ~/.zshrc_local
+  source ~/.zshrc_local
 fi
